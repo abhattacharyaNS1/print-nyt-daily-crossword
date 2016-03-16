@@ -1,0 +1,15 @@
+#!/bin/bash
+
+username=
+password=
+
+cookies=$(mktemp)
+trap "rm \"$cookies\"" EXIT
+
+curl -s -c "$cookies" -o /dev/null \
+    --data "username=$username&password=$password" \
+    https://myaccount.nytimes.com/mobile/login/smart/index.html
+
+date=$(date +%b%d%y)
+url=https://www.nytimes.com/svc/crosswords/v2/puzzle/print/$date.pdf
+curl -s -b "$cookies" $url | lpr -o media=Letter -o fit-to-page
